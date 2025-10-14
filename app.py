@@ -1,28 +1,22 @@
 #!/usr/bin/env python3
-import os
-
 import aws_cdk as cdk
-
-from assignment_3.assignment_3_stack import Assignment3Stack
-
+from assignment_3.network_stack import NetworkStack
+from assignment_3.server_stack import ServerStack
 
 app = cdk.App()
-Assignment3Stack(app, "Assignment3Stack",
-    # If you don't specify 'env', this stack will be environment-agnostic.
-    # Account/Region-dependent features and context lookups will not work,
-    # but a single synthesized template can be deployed anywhere.
 
-    # Uncomment the next line to specialize this stack for the AWS Account
-    # and Region that are implied by the current CLI configuration.
+# Create network stack
+network_stack = NetworkStack(app, "NetworkStack")
 
-    #env=cdk.Environment(account=os.getenv('CDK_DEFAULT_ACCOUNT'), region=os.getenv('CDK_DEFAULT_REGION')),
+# Create server stack that depends on network stack
+server_stack = ServerStack(
+    app, "ServerStack",
+    vpc=network_stack.vpc,
+    web_server_sg=network_stack.web_server_sg,
+    rds_sg=network_stack.rds_sg
+)
 
-    # Uncomment the next line if you know exactly what Account and Region you
-    # want to deploy the stack to. */
-
-    #env=cdk.Environment(account='123456789012', region='us-east-1'),
-
-    # For more information, see https://docs.aws.amazon.com/cdk/latest/guide/environments.html
-    )
+# Add dependency
+server_stack.add_dependency(network_stack)
 
 app.synth()
