@@ -103,7 +103,7 @@ class ServerStack(Stack):
         db_instance = rds.DatabaseInstance(
             self, "MySQLInstance",
             engine=rds.DatabaseInstanceEngine.mysql(
-                version=rds.MysqlEngineVersion.VER_8_0_35
+                version=rds.MysqlEngineVersion.VER_8_0
             ),
             instance_type=ec2.InstanceType.of(
                 ec2.InstanceClass.BURSTABLE3,
